@@ -43,3 +43,37 @@ func (sh *userHandler) FindUserById() gin.HandlerFunc {
 		c.JSON(http.StatusOK, user)
 	}
 }
+
+func (sh *userHandler) AddUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx := c
+		type AddUserJsonRequest struct {
+			UserName string `json:"user_name"`
+		}
+		var json AddUserJsonRequest
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		user, err := sh.usecase.AddUser(ctx, json.UserName)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+		}
+		c.JSON(http.StatusOK, user)
+	}
+}
+
+func (sh *userHandler) DeleteUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx := c
+		userID, err := strconv.Atoi(c.Param("user_id"))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+		}
+		userIDreturned, err := sh.usecase.DeleteUser(ctx, userID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+		}
+		c.JSON(http.StatusOK, userIDreturned)
+	}
+}

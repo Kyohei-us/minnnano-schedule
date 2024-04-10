@@ -16,8 +16,9 @@ const (
 	apiVersion      = "/v1"
 	healthCheckRoot = "/health_check"
 	// user
-	usersAPIRoot = apiVersion + "/users"
-	userIDParam  = "user_id"
+	usersAPIRoot  = apiVersion + "/users"
+	userIDParam   = "user_id"
+	userNameParam = "user_name"
 )
 
 func InitRouter() *gin.Engine {
@@ -59,6 +60,9 @@ func InitRouter() *gin.Engine {
 		// v1/users/{user_id}
 		relativePath = fmt.Sprintf("/:%s", userIDParam)
 		userGroup.GET(relativePath, handler.FindUserById())
+		relativePath = ""
+		userGroup.POST(relativePath, handler.AddUser())
+		userGroup.DELETE(relativePath, handler.DeleteUser())
 	}
 
 	return r

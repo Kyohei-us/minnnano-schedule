@@ -2,6 +2,7 @@ package infra
 
 import (
 	"fmt"
+	"minnnano-schedule/domain/model"
 	"os"
 
 	"gorm.io/driver/postgres"
@@ -27,6 +28,8 @@ func NewPostgreSQLConnector() *PostgreSQLConnector {
 		fmt.Println("ERROR: DB Connection failed")
 		panic(err)
 	}
+
+	db_connection.AutoMigrate(&model.User{})
 
 	return &PostgreSQLConnector{
 		Conn: db_connection,

@@ -9,6 +9,8 @@ import (
 type IUserUsecase interface {
 	FindUsers(ctx context.Context) ([]*model.User, error)
 	FindUserById(ctx context.Context, id int) (*model.User, error) // 追加
+	AddUser(ctx context.Context, userName string) (*model.User, error)
+	DeleteUser(ctx context.Context, id int) (int, error)
 }
 
 // インターフェースを満たすstruct
@@ -44,4 +46,22 @@ func (uu *userUsecase) FindUserById(ctx context.Context, id int) (*model.User, e
 	}
 
 	return model.UserFromDomainModel(ms), nil
+}
+
+func (uu *userUsecase) AddUser(ctx context.Context, userName string) (*model.User, error) {
+	ms, err := uu.svc.AddUser(ctx, userName)
+	if err != nil {
+		return nil, err
+	}
+
+	return model.UserFromDomainModel(ms), nil
+}
+
+func (uu *userUsecase) DeleteUser(ctx context.Context, id int) (int, error) {
+	ms, err := uu.svc.DeleteUser(ctx, id)
+	if err != nil {
+		return ms, err
+	}
+
+	return ms, nil
 }
